@@ -23,7 +23,7 @@ fetch('http://localhost:3003/canvas')
         td.style.backgroundColor = cell;
         tr.appendChild(td);
         td.id = rowIndex + ' ' + colIndex;
-        td.tabIndex = -1;
+        td.tabIndex = 1;
 
         if (rowIndex === 0 && colIndex === 0) {
           td.focus();
@@ -46,22 +46,19 @@ fetch('http://localhost:3003/canvas')
     });
   });
 
-$table.addEventListener('keydown', function (event) {
+document.addEventListener('keydown', function (event) {
   const x = parseInt(event.target.id.split(' ')[0]);
   const y = parseInt(event.target.id.split(' ')[1]);
-  console.log(event.key);
   switch (event.key) {
     case 'ArrowUp':
       if (x > 0) {
         document.getElementById(x - 1 + ' ' + y).focus();
-        console.log(x, y);
       }
       break;
     case 'ArrowDown':
       if (x < 9) {
         // Assuming the grid size is 10x10
         document.getElementById(x + 1 + ' ' + y).focus();
-        console.log(x, y);
       }
       break;
     case 'ArrowLeft':
@@ -74,7 +71,6 @@ $table.addEventListener('keydown', function (event) {
       if (y < 9) {
         // Assuming the grid size is 10x10
         document.getElementById(x + ' ' + (y + 1)).focus();
-        console.log(x, y);
       }
       break;
     case 'Enter':
