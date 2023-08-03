@@ -1,5 +1,4 @@
 'use strict';
-
 const $table = document.querySelector('table');
 
 const renderTable = (grid) => {
@@ -19,32 +18,23 @@ fetch('http://localhost:3003/canvas')
       // iterate over the cells
       let colIndex = 0;
       row.forEach((cell) => {
+        // creating the grid cell
         let td = document.createElement('td');
         td.style.backgroundColor = cell;
         tr.appendChild(td);
         td.id = rowIndex + ' ' + colIndex;
+        td.tabIndex = -1;
+
+        if (rowIndex === 0 && colIndex === 0) {
+          td.focus();
+        }
 
         const [x, y] = td.id.split(' ').map(Number);
 
         td.addEventListener('click', function () {
           // selecting the grid to be colored
           let newColor = palette.value;
-          if (this.style.backgroundColor !== newColor) {
-            this.style.backgroundColor = newColor;
-
-            // needed otherwise wont work
-            newColor = newColor.replace('#', '');
-            // i had an unknown bug not letting me put the color in the body so this is a small alternative
-            fetch(`http://localhost:3003/update/${x}/${y}/${newColor}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            })
-              .then((response) => response.json())
-              .then((data) => console.log(data))
-              .catch((error) => console.error('Error:', error));
-          }
+          updateColor(x, y, newColor, this);
         });
         // update column index
         colIndex += 1;
@@ -55,3 +45,59 @@ fetch('http://localhost:3003/canvas')
       rowIndex += 1;
     });
   });
+
+$table.addEventListener('keydown', function (event) {
+  const x = parseInt(event.target.id.split(' ')[0]);
+  const y = parseInt(event.target.id.split(' ')[1]);
+  console.log(event.key);
+  switch (event.key) {
+    case 'ArrowUp':
+      if (x > 0) {
+        document.getElementById(x - 1 + ' ' + y).focus();
+        console.log(x, y);
+      }
+      break;
+    case 'ArrowDown':
+      if (x < 9) {
+        // Assuming the grid size is 10x10
+        document.getElementById(x + 1 + ' ' + y).focus();
+        console.log(x, y);
+      }
+      break;
+    case 'ArrowLeft':
+      if (y > 0) {
+        document.getElementById(x + ' ' + (y - 1)).focus();
+        console.log(x, y);
+      }
+      break;
+    case 'ArrowRight':
+      if (y < 9) {
+        // Assuming the grid size is 10x10
+        document.getElementById(x + ' ' + (y + 1)).focus();
+        console.log(x, y);
+      }
+      break;
+    case 'Enter':
+      updateColor(x, y, document.getElementById('palette').value, event.target);
+      break;
+  }
+  // }
+});
+
+function updateColor(x, y, newColor, td) {
+  if (td.style.backgroundColor !== newColor) {
+    td.style.backgroundColor = newColor;
+    // needed otherwise wont work
+    newColor = newColor.replace('#', '');
+    // i had an unknown bug not letting me put the color in the body so this is a small alternative
+    fetch(`http://localhost:3003/update/${x}/${y}/${newColor}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error('Error:', error));
+  }
+}
