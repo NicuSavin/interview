@@ -21,13 +21,10 @@ fetch('http://localhost:3003/canvas')
         // creating the grid cell
         let td = document.createElement('td');
         td.style.backgroundColor = cell;
-        tr.appendChild(td);
         td.id = rowIndex + ' ' + colIndex;
         td.tabIndex = 1;
 
-        if (rowIndex === 0 && colIndex === 0) {
-          td.focus();
-        }
+        tr.appendChild(td);
 
         const [x, y] = td.id.split(' ').map(Number);
 
@@ -64,7 +61,6 @@ document.addEventListener('keydown', function (event) {
     case 'ArrowLeft':
       if (y > 0) {
         document.getElementById(x + ' ' + (y - 1)).focus();
-        console.log(x, y);
       }
       break;
     case 'ArrowRight':

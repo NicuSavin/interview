@@ -30,28 +30,11 @@ router.route({
 router.route({
   path: UPDATE_PATH,
   method: 'POST',
-  schemas: {
-    body: {
-      type: 'array',
-      items: {
-        type: 'array',
-        items: {
-          type: 'string'
-        }
-      }
-    } as const,
-    responses: {
-      200: {
-        type: 'string'
-      } as const
-    }
-  },
   handler(request: Request) {
     const rowIndex = request.params.row;
     const colIndex = request.params.col;
     // i had an unknown bug not letting me put the color in the body so this is a small alternative
     let newColor = request.params.color;
-    newColor = '#' + newColor;
 
     let newCanvas = canvas;
     newCanvas[rowIndex][colIndex] = newColor;
