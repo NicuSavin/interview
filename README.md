@@ -1,5 +1,7 @@
 # r/ploce
 
+This repository was cloned (the inital commit does not belong to me)
+
 # Setup
 
 1. Clone this repository
